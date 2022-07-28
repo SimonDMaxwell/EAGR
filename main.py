@@ -7,22 +7,18 @@ from tkinter import filedialog
 
 # Main function
 def main():
-    app_name = "Express App Generator (EXAG) - Roshane-Johnson"
-    app_version = "v1.4"
+    app_name = "MEAN Server Generator (MSEG) - Simon Maxwell"
+    app_version = "v1.0"
 
-    input_dir = input("What's the name of your project? ")
+    input_dir = "server"
+    author = input("Hello, Author, what is your desired name?")
+    name = input("What will this project be named?")
     print("[!] Where should this project be stored? [Hit enter to select location]")
-    print(
-        "[!] This feature is buggy, look for the select folder dialog among your open windows and choose a directory.")
-    tkinter.Tk().withdraw()
+    tkinter.Tk().withdraw(parent=root)
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, input_dir))
-    folders: list[str] = ["views", 'views/layouts', "views/partials", "public", "public/assets", "public/assets/images",
-                          "public/assets/js", "public/assets/css", "routes", "lib"]
-    files: list[str] = ["app.js", ".env", ".gitignore", "tailwind.config.js", "package.json", "views/index.ejs",
-                        "views/layouts/layout.ejs", "views/partials/imports.ejs", "views/partials/navbar.ejs",
-                        "public/assets/css/_style.css", "public/assets/js/main.js",
-                        "routes/index.js", "lib/db.js", "lib/helpers.js"]
+    folders: list[str] = [ "api", "api/middlewares", "api/controllers", "lib", "lib/db", "lib/models", ]
+    files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "lib/db/db.js" ]
     os.mkdir(project_dir)
 
     # Create folders
@@ -34,14 +30,10 @@ def main():
     for file in files:
         if file == ".env":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('NAME=ExpressApp\n'
+            f.write(f'NAME={name}\n'
                     'PORT=8080\n'
-                    f'SESSION_SECRET=exag_{date.today().year}\n'
-                    '\n'
-                    'DB_HOST=localhost\n'
-                    'DB_USER=root\n'
-                    'DB_PASS=\n'
-                    'DB_NAME=')
+                    'DBHOST=localhost:27017\n'
+                    f'SESSION_SECRET=eagr_{date.today().year}\n')
             f.close()
             continue
         if file == ".gitignore":
@@ -155,37 +147,27 @@ def main():
         if file == "package.json":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write('{\n'
-                    '	"name": "express-app",\n'
+                    f'	"name": "{name}",\n'
                     '	"version": "1.0.0",\n'
                     '	"description": "Just another express application.",\n'
                     '	"main": "app.js",\n'
                     '	"scripts": {\n'
                     '		"start": "node app.js",\n'
-                    '		"build": "npx tailwindcss -i ./public/assets/css/_style.css -o ./public/assets/css/style.css --watch",\n'
-                    '		"devStart": "concurrently \\"nodemon app.js\\" \\"npx tailwindcss -i ./public/assets/css/_style.css -o ./public/assets/css/style.css --watch\\""\n'
                     '	},\n'
                     '	"keywords": [],\n'
-                    '	"author": "Roshane-Johnson",\n'
+                    f'	"author": {author},\n'
                     '	"license": "ISC",\n'
                     '	"type": "commonjs",\n'
                     '	"dependencies": {\n'
-                    '		"bcrypt": "^5.0.1",\n'
                     '		"cors": "^2.8.5",\n'
                     '		"dotenv": "^16.0.0",\n'
-                    '		"ejs": "^3.1.7",\n'
                     '		"express": "^4.18.1",\n'
-                    '		"express-ejs-layouts": "^2.5.1",\n'
-                    '       "express-fileupload": "^1.4.0",\n'
-                    '		"express-flash": "^0.0.2",\n'
                     '		"express-session": "^1.17.3",\n'
-                    '		"mysql": "^2.18.1"\n'
+                    '		"mongoose": "^6.4.6",\n'
                     '	},\n'
                     '	"devDependencies": {\n'
-                    '		"@tailwindcss/forms": "^0.5.2",\n'
-                    '		"@tailwindcss/typography": "^0.5.2",\n'
                     '		"concurrently": "^7.2.1",\n'
                     '		"nodemon": "^2.0.16",\n'
-                    '		"tailwindcss": "^3.0.24"\n'
                     '	},\n'
                     '	"engines": {\n'
                     '		"node": "^16.13.2",\n'
@@ -199,28 +181,18 @@ def main():
             f.write('require(\'dotenv\').config()\n'
                     'const express = require(\'express\')\n'
                     'const session = require(\'express-session\')\n'
-                    'const fileUpload = require(\'express-fileupload\')\n'
-                    'const expressLayouts = require(\'express-ejs-layouts\')\n'
                     'const cors = require(\'cors\')\n'
                     'const path = require(\'path\')\n'
-                    'const flash = require(\'express-flash\')\n'
                     'const app = express()\n'
+                    'const API_V1 = require(\'./api/v1/hub.js\')'
                     '\n'
                     'const PORT = process.env.PORT || 8080\n'
-                    'const APP_NAME = process.env.NAME || \'Express App\'\n'
-                    '\n'
-                    '// Express configs\n'
-                    'app.set(\'view engine\', \'ejs\')\n'
-                    'app.set(\'layout\', \'layouts/layout\')\n'
+                    'const APP_NAME = process.env.NAME || \'Express API\'\n'
                     '\n'
                     '// Middlewares\n'
-                    'app.use(expressLayouts)\n'
                     'app.use(express.json())\n'
                     'app.use(express.urlencoded({ extended: true }))\n'
-                    'app.use(express.static(path.join(__dirname, \'public\')))\n'
                     'app.use(cors([\'*\']))\n'
-                    'app.use(flash())\n'
-                    'app.use(fileUpload({ createParentPath: true }))\n'
                     'app.use(\n'
                     '	session({\n'
                     '		secret: process.env.SESSION_SECRET || \'secret8080\',\n'
@@ -231,9 +203,11 @@ def main():
                     '		},\n'
                     '	})\n'
                     ')\n'
-                    '\n'
-                    '// View Routes\n'
-                    'app.use(\'/\', require(\'./routes/index\'))\n'
+                    '// Establish API'
+                    'app.get("", (req, res) => {\n'
+                    '   res.json({name: process.env.NAME, versions: ["v1"]})\n'
+                    '})\n'
+                    'app.use("/api/v1", API_V1)\n'
                     '\n'
                     '// Start express app\n'
                     'const _app = app.listen(PORT, require(\'os\').hostname(), () => {\n'
@@ -241,146 +215,23 @@ def main():
                     '})\n')
             f.close()
             continue
-        if file == "routes/index.js":
+        if file == "lib/db/db.js":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('const express = require(\'express\')\n'
-                    'const router = express.Router()\n'
+            f.write('const mongoose = require(\'mongoose\')\n'
                     '\n'
-                    'router.get(\'/\', (req, res) => {\n'
-                    '	res.render(\'index\', { title: \'Home\' })\n'
+                    'console.log(\'Establishing for database connection...\')\n'
+                    'mongoose.connect(process.env.DBHOST, (err) => {\n'
+                    '   if (err) {\n'
+                    '       console.log(`MongoDB failed to connect @ ${process.env.DBHOST}`)\n'
+                    '       console.error(err)\n'
+                    '       exit(-1)\n'
+                    '   } else {\n'
+                    '       console.log("MongoDB succesfully connected...")\n'
+                    '   }\n'
                     '})\n'
                     '\n'
-                    'module.exports = router\n')
-            f.close()
-            continue
-        if file == "views/index.ejs":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('<div class="h-screen grid place-items-center">\n'
-                    '	<h1>Express App Works</h1>\n'
-                    '</div>\n')
-            f.close()
-            continue
-        if file == "views/layouts/layout.ejs":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('<!DOCTYPE html>\n'
-                    '<html lang="en">\n'
-                    '	<head>\n'
-                    '		<meta charset="UTF-8" />\n'
-                    '		<meta http-equiv="X-UA-Compatible" content="IE=edge" />\n'
-                    '		<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n'
-                    '		<%- include("../partials/imports.ejs") %>\n'
-                    '		<title><%= title %> - Express App</title>\n'
-                    '	</head>\n'
-                    '	<body>\n'
-                    '		<%- include("../partials/navbar.ejs") %> <%- body %>\n'
-                    '	</body>\n'
-                    '</html>\n')
-            f.close()
-            continue
-        if file == "views/partials/imports.ejs":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('<!-- JS -->\n'
-                    '<script defer src="/assets/js/main.js"></script>\n'
-                    '<!-- CSS -->\n'
-                    '<link rel="stylesheet" href="/assets/css/style.css" />\n')
-            f.close()
-            continue
-        if file == "views/partials/navbar.ejs":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), 'x')
-            f.write('<nav class="fixed top-0 w-full">\n'
-                    '	<div class="w-10/12 mx-auto py-5 grid grid-cols-2">\n'
-                    '		<a href="/">ExpressApp</a>\n'
-                    '		<ul class="flex justify-end">\n'
-                    '			<li><a href="/">Home</a></li>\n'
-                    '			<li><a href="/test1">Test1</a></li>\n'
-                    '			<li><a href="/test2">Test2</a></li>\n'
-                    '		</ul>\n'
-                    '	</div>\n'
-                    '</nav>\n')
-            f.close()
-            continue
-        if file == "lib/db.js":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('const mysql = require(\'mysql\')\n'
-                    'require(\'dotenv\').config()\n'
-                    '\n'
-                    'const DB = mysql.createConnection({\n'
-                    '	host: process.env.DB_HOST || \'localhost\',\n'
-                    '	port: process.env.DB_PORT || 3306,\n'
-                    '	user: process.env.DB_USER || \'root\',\n'
-                    '	password: process.env.DB_PASS || \'\',\n'
-                    '	database: process.env.DB_NAME || \'\',\n'
-                    '	dateStrings: true,\n'
-                    '	multipleStatements: true,\n'
-                    '})\n'
-                    '\n'
-                    'console.log(\'Waiting for database connection...\')\n'
-                    'DB.connect((err) => {\n'
-                    '	if (err) throw err\n'
-                    '\n'
-                    '	console.log(\'Database Connected!\')\n'
-                    '})\n'
-                    '\n'
-                    'module.exports = DB\n')
-            f.close()
-            continue
-        if file == "lib/helpers.js":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('/**\n'
-                    ' *\n'
-                    ' * @param {Response} res Express app response parameter\n'
-                    ' * @param {Array} data Data to return as json to the endpoint\n'
-                    ' * @param {string} message Message to return as json to the endpoint. Default: "success"\n'
-                    ' * @param {number} status HTTP Status Code to return to endpoint. Default: 200\n'
-                    ' * @returns\n'
-                    ' */\n'
-                    'function SuccessResponse(res, data = [], message = \'success\', status = 200) {\n'
-                    '	return res.json({ message, status, data })\n'
-                    '}\n'
-                    '\n'
-                    '/**\n'
-                    ' *\n'
-                    ' * @param {Response} res Express app response parameter\n'
-                    ' * @param {Array} data Data to return as json to the endpoint\n'
-                    ' * @param {string} message Message to return as json to the endpoint. Default: "error"\n'
-                    ' * @param {number} status HTTP Status Code to return to endpoint. Default: 500\n'
-                    ' * @returns\n'
-                    ' */\n'
-                    'function ErrorResponse(res, data = [], message = \'error\', status = 500) {\n'
-                    '	return res.json({ message, status, data })\n'
-                    '}\n'
-                    '\n'
-                    'module.exports = { SuccessResponse, ErrorResponse }\n')
-            f.close()
-            continue
-        if file == "tailwind.config.js":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('module.exports = {\n'
-                    '	content: [\'./views/**/*.ejs\'],\n'
-                    '	theme: {\n'
-                    '		extend: {},\n'
-                    '	},\n'
-                    '	plugins: [require(\'@tailwindcss/forms\'), require(\'@tailwindcss/typography\')],\n'
-                    '}\n')
-            f.close()
-            continue
-        if file == "public/assets/css/_style.css":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write('@tailwind base;\n'
-                    '@tailwind components;\n'
-                    '@tailwind utilities;\n'
-                    '\n'
-                    'nav ul li {\n'
-                    '	--nav-padding: 10px;\n'
-                    '	display: flex;\n'
-                    '	padding-left: var(--nav-padding);\n'
-                    '	padding-right: var(--nav-padding);\n'
-                    '}\n')
-            f.close()
-            continue
-        if file == "public/assets/js/main.js":
-            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
-            f.write(f'console.info(\'{app_name} {app_version}\')\n')
+                    'module.exports = mongoose'
+                    '\n')
             f.close()
             continue
 
@@ -390,11 +241,11 @@ def main():
 
 def banner():
     print('\n'
-          '███████ ██   ██ ██████  ██████  ███████ ███████ ███████      ██████  ███████ ███    ██ \n'
-          '██       ██ ██  ██   ██ ██   ██ ██      ██      ██          ██       ██      ████   ██ \n'
-          '█████     ███   ██████  ██████  █████   ███████ ███████     ██   ███ █████   ██ ██  ██ \n'
-          '██       ██ ██  ██      ██   ██ ██           ██      ██     ██    ██ ██      ██  ██ ██ \n'
-          '███████ ██   ██ ██      ██   ██ ███████ ███████ ███████      ██████  ███████ ██   ████ \n'
+          '███████ ██   ██ ██████  ██████  ███████ ███████ ███████   ██ █         ██████  ███████ ███    ██ \n'
+          '██       ██ ██  ██   ██ ██   ██ ██      ██      ██           ██ █     ██       ██      ████   ██ \n'
+          '█████     ███   ██████  ██████  █████   ███████ ███████         ██ █  ██   ███ █████   ██ ██  ██ \n'
+          '██       ██ ██  ██      ██   ██ ██           ██      ██      ██ █     ██    ██ ██      ██  ██ ██ \n'
+          '███████ ██   ██ ██      ██   ██ ███████ ███████ ███████   ██ █         ██████  ███████ ██   ████ \n'
           '\n')
 
 
