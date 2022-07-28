@@ -1,5 +1,5 @@
 @ECHO OFF
-TITLE Express App Generator (EXAG) - Roshane-Johnson
+TITLE Express API Generator (E.A.G.R) - Simon Maxwell
 COLOR a
 CLS
 python ./main.py
