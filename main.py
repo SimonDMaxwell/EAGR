@@ -14,7 +14,7 @@ def main():
     author = input("Hello, Author, what is your desired name?")
     name = input("What will this project be named?")
     print("[!] Where should this project be stored? [Hit enter to select location]")
-    tkinter.Tk().withdraw(parent=root)
+    tkinter.Tk().withdraw()
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, input_dir))
     folders: list[str] = [ "api", "api/middlewares", "api/controllers", "lib", "lib/db", "lib/models", ]
@@ -148,7 +148,7 @@ def main():
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write('{\n'
                     f'	"name": "{name}",\n'
-                    '	"version": "1.0.0",\n'
+                    '	"version": "1.0.1",\n'
                     '	"description": "Just another express application.",\n'
                     '	"main": "app.js",\n'
                     '	"scripts": {\n'
@@ -182,7 +182,6 @@ def main():
                     'const express = require(\'express\')\n'
                     'const session = require(\'express-session\')\n'
                     'const cors = require(\'cors\')\n'
-                    'const path = require(\'path\')\n'
                     'const app = express()\n'
                     'const API_V1 = require(\'./api/v1/hub.js\')'
                     '\n'
@@ -203,7 +202,7 @@ def main():
                     '		},\n'
                     '	})\n'
                     ')\n'
-                    '// Establish API'
+                    '// Establish API\n'
                     'app.get("", (req, res) => {\n'
                     '   res.json({name: process.env.NAME, versions: ["v1"]})\n'
                     '})\n'
