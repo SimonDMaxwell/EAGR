@@ -17,7 +17,7 @@ def main():
     tkinter.Tk().withdraw()
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, input_dir))
-    folders: list[str] = [ "api", "api/middlewares", "api/controllers", "lib", "lib/db", "lib/models", ]
+    folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/models", ]
     files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "lib/db/db.js" ]
     os.mkdir(project_dir)
 
@@ -28,6 +28,15 @@ def main():
 
     # Create files
     for file in files:
+        if file == "api/v1/hub.js":
+            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
+            f.write(
+                'const router = require("express").Router()\n'
+                '\n'
+                'module.exports = router'
+            );
+            f.close()
+            continue
         if file == ".env":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write(f'NAME={name}\n'
