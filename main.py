@@ -17,8 +17,8 @@ def main():
     tkinter.Tk().withdraw()
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, input_dir))
-    folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/models", ]
-    files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "lib/db/db.js" ]
+    folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/db/models", ]
+    files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/db/db.js", "lib/db/models/model1.js" ]
     os.mkdir(project_dir)
 
     # Create folders
@@ -28,10 +28,41 @@ def main():
 
     # Create files
     for file in files:
+        if file == "lib/db/models/model1.js":
+            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
+            f.write(
+                'const db = require("../db.js")\n'
+                '\n'
+                'let modelSchema = new db.Schema({\n'
+                '   modelName: { type: String, required: true }\n'
+                '})\n'
+                '\n'
+                'module.exports = db.model("models", modelSchema)'
+            )
+            f.close()
+            continue
+        if file == "api/v1/controllers/controller1.js":
+            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
+            f.write(
+                'const model1 = require("../../../lib//db/models/model1.js")'
+                '\n'
+                'class controller1 {\n'
+                '   static func1(req, res) {\n'
+                '       new model1(req.body).save()\n'
+                '       console.log("This is a snippet example.")\n'
+                '   }\n'
+                '}\n'
+                'module.exports = controller1'
+            )
+            f.close()
+            continue
         if file == "api/v1/hub.js":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write(
+                'const controller1 = require("./controllers/controller1.js")\n'
                 'const router = require("express").Router()\n'
+                '\n'
+                'router.post("/model1", controller1.func1)\n'
                 '\n'
                 'module.exports = router'
             );
@@ -164,7 +195,7 @@ def main():
                     '		"start": "node app.js",\n'
                     '	},\n'
                     '	"keywords": [],\n'
-                    f'	"author": {author},\n'
+                    f'	"author": ""{author}",\n'
                     '	"license": "ISC",\n'
                     '	"type": "commonjs",\n'
                     '	"dependencies": {\n'
@@ -172,11 +203,11 @@ def main():
                     '		"dotenv": "^16.0.0",\n'
                     '		"express": "^4.18.1",\n'
                     '		"express-session": "^1.17.3",\n'
-                    '		"mongoose": "^6.4.6",\n'
+                    '		"mongoose": "^6.4.6"\n'
                     '	},\n'
                     '	"devDependencies": {\n'
                     '		"concurrently": "^7.2.1",\n'
-                    '		"nodemon": "^2.0.16",\n'
+                    '		"nodemon": "^2.0.16"\n'
                     '	},\n'
                     '	"engines": {\n'
                     '		"node": "^16.13.2",\n'
