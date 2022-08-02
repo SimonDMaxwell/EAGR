@@ -7,16 +7,15 @@ from tkinter import filedialog
 
 # Main function
 def main():
-    app_name = "MEAN Server Generator (MSEG) - Simon Maxwell"
-    app_version = "v1.0"
+    app_name = "REST API Generator (MSEG) - Simon Maxwell"
+    app_version = "v1.1.0"
 
-    input_dir = "server"
     author = input("Hello, Author, what is your desired name?")
     name = input("What will this project be named?")
     print("[!] Where should this project be stored? [Hit enter to select location]")
     tkinter.Tk().withdraw()
     gen_directory = filedialog.askdirectory()
-    project_dir: str = os.path.normpath(os.path.join(gen_directory, input_dir))
+    project_dir: str = os.path.normpath(os.path.join(gen_directory, name))
     folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/db/models", ]
     files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/db/db.js", "lib/db/models/model1.js" ]
     os.mkdir(project_dir)
@@ -72,7 +71,7 @@ def main():
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write(f'NAME={name}\n'
                     'PORT=8080\n'
-                    'DBHOST=localhost:27017\n'
+                    'DBHOST=mongodb://localhost:27017\n'
                     f'SESSION_SECRET=eagr_{date.today().year}\n')
             f.close()
             continue
@@ -187,15 +186,15 @@ def main():
         if file == "package.json":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write('{\n'
-                    f'	"name": "{name}",\n'
+                    f'	"name": "{name.lower()}",\n'
                     '	"version": "1.0.1",\n'
                     '	"description": "Just another express application.",\n'
                     '	"main": "app.js",\n'
                     '	"scripts": {\n'
-                    '		"start": "node app.js",\n'
+                    '		"start": "node app.js"\n'
                     '	},\n'
                     '	"keywords": [],\n'
-                    f'	"author": ""{author}",\n'
+                    f'	"author": "{author}",\n'
                     '	"license": "ISC",\n'
                     '	"type": "commonjs",\n'
                     '	"dependencies": {\n'
