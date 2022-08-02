@@ -7,7 +7,7 @@ from tkinter import filedialog
 
 # Main function
 def main():
-    app_name = "REST API Generator (MSEG) - Simon Maxwell"
+    app_name = "Express API Generator (EAGR) - Simon Maxwell"
     app_version = "v1.1.0"
 
     author = input("Hello, Author, what is your desired name?")
