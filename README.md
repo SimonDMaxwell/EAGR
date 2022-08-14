@@ -2,7 +2,7 @@
 
 Features:
 
-- [x] MVC Express Architecture with preinstalled body parsing, session handling and a middlewares folder
+- [x] MVC Express Architecture with preinstalled body parsing, session handling, JSON response helper and a middlewares folder
 - [x] Generate .gitignore, .env and package.json
 - [x] Comes with MongoDB functionality
 
@@ -21,4 +21,4 @@ If you'd like to contribute to this project, simply create a fork and make a pul
 ## NPM Commands
 
 - Deploy command `npm run start` or `npm start`
-
+- Testing command `npm run test`

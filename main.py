@@ -8,7 +8,7 @@ from tkinter import filedialog
 # Main function
 def main():
     app_name = "Express API Generator (EAGR) - Simon Maxwell"
-    app_version = "v1.1.0"
+    app_version = "v1.2.0"
 
     author = input("Hello, Author, what is your desired name?")
     name = input("What will this project be named?")
@@ -17,7 +17,7 @@ def main():
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, name))
     folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/db/models", ]
-    files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/db/db.js", "lib/db/models/model1.js" ]
+    files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/json.helper.js", "lib/db/db.js", "lib/db/models/model1.js" ]
     os.mkdir(project_dir)
 
     # Create folders
@@ -37,6 +37,31 @@ def main():
                 '})\n'
                 '\n'
                 'module.exports = db.model("models", modelSchema)'
+            )
+            f.close()
+            continue
+        if file == "lib/json.helper.js":
+            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
+            f.write(
+                'class JSONResponse {\n'
+                '   static success(res, status = 200, message = "success", data = null) {\n'
+                '      res.status(status).json({\n'
+                '         status: status,\n'
+                '         message,\n'
+                '         data,\n'
+                '      });\n'
+                '   }\n'
+                '\n'
+                '   static error(res, status = 500, message = "error", error = new Error(message)) {\n'
+                '      res.status(status).json({\n'
+                '         status: status,\n'
+                '         message,\n'
+                '         error,\n'
+                '      });\n'
+                '   }\n'
+                '}\n'
+                '\n'
+                'module.exports = { JSONResponse };'
             )
             f.close()
             continue
@@ -188,10 +213,11 @@ def main():
             f.write('{\n'
                     f'	"name": "{name.lower()}",\n'
                     '	"version": "1.0.1",\n'
-                    '	"description": "Just another express application.",\n'
+                    '	"description": "A standard Express REST API.",\n'
                     '	"main": "app.js",\n'
                     '	"scripts": {\n'
                     '		"start": "node app.js"\n'
+                    '       "test": "nodemon app.js"\n'
                     '	},\n'
                     '	"keywords": [],\n'
                     f'	"author": "{author}",\n'
