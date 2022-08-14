@@ -17,7 +17,7 @@ def main():
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, name))
     folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/db/models", ]
-    files: list[str] = [ ".env", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/json.helper.js", "lib/db/db.js", "lib/db/models/model1.js" ]
+    files: list[str] = [ ".env.example", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/json.helper.js", "lib/db/db.js", "lib/db/models/model1.js" ]
     os.mkdir(project_dir)
 
     # Create folders
@@ -92,12 +92,12 @@ def main():
             );
             f.close()
             continue
-        if file == ".env":
+        if file == ".env.example":
             f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
             f.write(f'NAME={name}\n'
                     'PORT=8080\n'
                     'DBHOST=mongodb://localhost:27017\n'
-                    f'SESSION_SECRET=eagr_{date.today().year}\n')
+                    f'SESSION_SECRET=eagr_{date.today().year}{date.today().month}{date.today().day}\n')
             f.close()
             continue
         if file == ".gitignore":
