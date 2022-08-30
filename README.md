@@ -18,6 +18,10 @@ If you'd like to contribute to this project, simply create a fork and make a pul
 - Double click `expressgen.bat` to get started
 - (Recommended) Set up your `.env` to match your database and application.
 
+## Helpers
+-   JSON response helper script
+-   Email helper script using nodemail
+
 ## NPM Commands
 
 - Deploy command `npm run start` or `npm start`

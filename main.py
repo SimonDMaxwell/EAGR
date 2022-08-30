@@ -8,7 +8,7 @@ from tkinter import filedialog
 # Main function
 def main():
     app_name = "Express API Generator (EAGR) - Simon Maxwell"
-    app_version = "v1.2.0"
+    app_version = "v1.2.1"
 
     author = input("Hello, Author, what is your desired name?")
     name = input("What will this project be named?")
