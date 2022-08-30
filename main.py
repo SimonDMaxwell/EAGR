@@ -17,7 +17,7 @@ def main():
     gen_directory = filedialog.askdirectory()
     project_dir: str = os.path.normpath(os.path.join(gen_directory, name))
     folders: list[str] = [ "api", "api/v1", "api/v1/middlewares", "api/v1/controllers", "lib", "lib/db", "lib/db/models", ]
-    files: list[str] = [ ".env.example", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/json.helper.js", "lib/db/db.js", "lib/db/models/model1.js" ]
+    files: list[str] = [ ".env.example", "package.json", ".gitignore" ,"app.js", "api/v1/hub.js", "api/v1/controllers/controller1.js", "lib/json.helper.js", "lib/email.helper.js", "lib/db/db.js", "lib/db/models/model1.js" ]
     os.mkdir(project_dir)
 
     # Create folders
@@ -37,6 +37,50 @@ def main():
                 '})\n'
                 '\n'
                 'module.exports = db.model("models", modelSchema)'
+            )
+            f.close()
+            continue
+        if file == "lib/email.helper.js":
+            f = open(os.path.normpath(os.path.join(project_dir, file)), "x")
+            f.write(
+                'var nodemailer = require(\'nodemailer\')\n'
+                'const JSONResponse = require(\'./json.helper\')\n'
+                'require("dotenv").config()\n'
+                '\n'
+                'class Emailer {\n'
+                '	transporter = nodemailer.createTransport({\n'
+                '		service: \'gmail\',\n'
+                '		auth: {\n'
+                '			user: process.env.user,\n'
+                '			pass: process.env.password,\n'
+                '		},\n'
+                '	})\n'
+                '\n'
+                '	constructor() {}\n'
+                '	/**\n'
+                '	 * Sends an email to the intended recipient.\n'
+                '	 * @param {*} to - The recipient or recipient array for the email\n'
+                '	 * @param {*} sub - The subject of the email\n'
+                '	 * @param {*} body - The body of the email\n'
+                '	 */\n'
+                '	sendMail(to, sub, body) {\n'
+                '		let mailOptions = {\n'
+                '			to: to,\n'
+                '			from: process.env.user,\n'
+                '			subject: sub,\n'
+                '			text: body,\n'
+                '		}\n'
+                '		this.transporter.sendMail(mailOptions, function (error, info) {\n'
+                '			if (error) {\n'
+                '				console.error(error)\n'
+                '			} else {\n'
+                '				console.log(\'Email sent: \' + info.response)\n'
+                '			}\n'
+                '		})\n'
+                '	}\n'
+                '}\n'
+                '\n'
+                'module.exports = new Emailer()'
             )
             f.close()
             continue
