@@ -344,6 +344,7 @@ def main():
             continue
 
     # Generation completed
+    os.system("npm i --save nodemailer")
     completed(os.path.normpath(project_dir))
 
 
