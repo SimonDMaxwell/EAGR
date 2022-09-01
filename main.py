@@ -8,7 +8,7 @@ from tkinter import filedialog
 # Main function
 def main():
     app_name = "Express API Generator (EAGR) - Simon Maxwell"
-    app_version = "v1.2.1"
+    app_version = "v1.2.2"
 
     author = input("Hello, Author, what is your desired name?")
     name = input("What will this project be named?")
@@ -249,7 +249,9 @@ def main():
                     '.dynamodb/\n'
                     '\n'
                     '# TernJS port file\n'
-                    '.tern-port\n')
+                    '.tern-port\n'
+                    '# Environment\n'
+                    '.env\n')
             f.close()
             continue
         if file == "package.json":
